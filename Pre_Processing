@@ -67,8 +67,10 @@ time2 = time1(e+1:n-e);
 figure; 
 subplot(2,1,1) ;
 plot(time,data(:,1),'g') ;
+title('Raw Data')
 subplot(2,1,2) ;
 plot(time2,F_res(:,1),'r') ;
+title({'Raw Data after resampling to make the EEG data' ; 'and the Fiber-photometry data the same length'})
 
 dFF = (F_res(:,1) - median(F_res(:,1)))/median(F_res(:,1)) ;
 
@@ -88,10 +90,10 @@ dFF_detrend = dFF-curfit ;
 figure ;
 subplot(2,1,1) ;
 plot(f,time2,dFF,'g') ;
-title('original dFF with fitted model') ;
+title('The original dFF with the fitted model') ;
 subplot(2,1,2) ;
 plot(time2,dFF,'g');hold on;plot(time2,dFF_detrend,'r') ;
-title('original and detrended dFF') ;
+title('The original and detrended dFF') ;
 
 % Create a new variable called EEGPh of the synched up Fiber-photometry &
 % EEG data
@@ -101,4 +103,3 @@ EEGPh(:,3) = dFF_detrend(:,1) ;
 % Save the variable in the current folder
 save(filename, 'EEGPh') ;
 end
-
