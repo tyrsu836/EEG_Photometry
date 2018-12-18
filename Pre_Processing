@@ -1,0 +1,104 @@
+function [EEGPh] = Pre_Processing 
+
+%% Ported from BWJ_EEG_Photo and various other scripts to streamline EEG+Fiber photometry data analysis
+% put together by Susan Tyree
+
+% To start you will need three files:
+% Your Fiber-photometry data output with a filename ending in "DATA.mat"
+% Your Fiber-photometry time output with a filename ending in "TIME.mat"
+% Your EEG output with a filename ending in "TEXT.txt"
+
+%% These steps import your 3 data types, data, time, and EEG_Data & create our output filename from the existing filenames
+% data
+[file] = uigetfile({'*DATA.mat'},...
+                          'Select Photometry DATA output file');
+datastruct = open(file) ;
+data = datastruct.data ;
+
+filename = strrep(file, 'DATA', 'EEGPh') ;  % This command uses the matlab data file's name to create out EEGPh filename by simply replacing DATA with EEGPh
+                     
+[file] = uigetfile({'*TIME.mat'},...
+                          'Select Photometry TIME output file');
+timestruct = open(file) ;
+time = timestruct.time ;
+                      
+[file] = uigetfile({'*TEXT.txt'},...
+                          'Select EEG TEXT output file');
+EEG_File = readtable(file) ;
+EEG_data = [NaN(17,2) ; EEG_File.V, EEG_File.V_1] ; % Here we are adding 17 rows of NaNs to the beginning of the EEG data matrix, as this will be important when lining up the Fiber-photometry & EEG data
+                      
+% Ask the user for the sampling rate of the Fiber-photometry and the EEG -
+% default both to 256 and save as the variables r1 and r2
+prompt = {'Enter photomery sampling rate (default = 256):','Enter EEG/EMG sampling rate (default = 256):'};
+title1 = 'User Input';
+dims = [1 35];
+definput = {'256','256'};
+answer = inputdlg(prompt,title1,dims,definput) ;
+r1 = str2double(answer(1,1)) ;
+r2 = str2double(answer(2,1)) ;
+
+% Ask the user which type of detrending they would like, I put in a 'None'
+% option, but I feel like no one will want that.
+% Save the answer as a variable named detrend_type
+answer = questdlg('Choose which type of detrending you would like me to do:', ...
+	'Detrend Options', ...
+	'Linear','Exponential','None','Linear');
+% Handle response
+switch answer
+    case 'Linear'
+        detrend_type = 1;
+    case 'Exponential'
+        detrend_type = 2;
+    case 'None'
+        disp('I''m afraid I can''t do that, Dave.')
+        detrend_type = 0;
+end
+
+% This section resamples the data so that the EEG and Fiber-photometry data
+% are the same length using the r1 and r2 variables gathered from the user
+sec = size(data,1)/r1 ;
+e = 25; % number of data points cut at both ends
+n = sec*r2; 
+time1 = linspace(0,sec,n)';
+F_res = resample(data, r2, r1);
+F_res = F_res(e+1:n-e , :); % correct error created by resamping by cutting off data points at both ends
+time2 = time1(e+1:n-e);
+
+figure; 
+subplot(2,1,1) ;
+plot(time,data(:,1),'g') ;
+subplot(2,1,2) ;
+plot(time2,F_res(:,1),'r') ;
+
+dFF = (F_res(:,1) - median(F_res(:,1)))/median(F_res(:,1)) ;
+
+% Perform the calculations for the type of detrending requested above
+if detrend_type == 2 % Exponential
+    f = fit(time2,dFF,'exp1','lower',[0 -Inf],'upper',[Inf 0],'startpoint',[1 -1]) ;
+    curfit=f.a*exp(f.b*time2) ;
+elseif detrend_type == 1 % Linear
+    f = fit(time2,dFF,'poly1') ;
+    curfit = f.p1*time2 + f.p2 ;
+end
+
+% Perform detrending:
+dFF_detrend = dFF-curfit ;
+
+% Plot dat shit
+figure ;
+subplot(2,1,1) ;
+plot(f,time2,dFF,'g') ;
+title('original dFF with fitted model') ;
+subplot(2,1,2) ;
+plot(time2,dFF,'g');hold on;plot(time2,dFF_detrend,'r') ;
+title('original and detrended dFF') ;
+
+% Create a new variable called EEGPh of the synched up Fiber-photometry &
+% EEG data
+EEGPh = EEG_data(e+1:n-e ,:) ;
+EEGPh(:,3) = dFF_detrend(:,1) ;
+
+% Save the variable in the current folder
+save(filename, 'EEGPh') ;
+end
+
