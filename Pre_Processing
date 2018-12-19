@@ -25,8 +25,8 @@ time = timestruct.time ;
 [file] = uigetfile({'*TEXT.txt'},...
                           'Select EEG TEXT output file');
 EEG_File = readtable(file) ;
-EEG_data = [NaN(17,2) ; EEG_File.V, EEG_File.V_1] ; % Here we are adding 17 rows of NaNs to the beginning of the EEG data matrix, as this will be important when lining up the Fiber-photometry & EEG data
-                      
+EEG_data = [EEG_File.V, EEG_File.V_1] ; % 
+
 % Ask the user for the sampling rate of the Fiber-photometry and the EEG -
 % default both to 256 and save as the variables r1 and r2
 prompt = {'Enter photomery sampling rate (default = 256):','Enter EEG/EMG sampling rate (default = 256):'};
