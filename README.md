@@ -1,9 +1,5 @@
 # EEG_Photometry
-These are some, but not all of the de Lecea lab's scripts for processing EEG/EMG &amp; fiber-photometry data. Please note that there is one step missing where we score the EEG/EMG into sleep states, as it belongs to another lab and is copyrighted. Sorry!
-
-Please note one step of this process is not included as it belongs to someone else! 
-These scripts are for pre-processing and plotting EEG and Fiber-Photometry data - the missing step is scoring the different sleep states.
-To see the output from that step look at the EEG_SCORED.txt file in the example data - you should be able to match up your EEG scoring program output to ours easily enough :)
+These are some, but not all of the de Lecea lab's scripts for processing EEG/EMG &amp; fiber-photometry data. Please note that there is one step missing where we score the EEG/EMG into sleep states, as it belongs to another lab and is copyrighted. Sorry! To see the output from that step look at the EEG_SCORED.txt file in the example data - you should be able to match up your EEG scoring program output to ours easily enough :)
 
 This folder contains 3 2017a MATLAB scripts that I used to create the scripts, test it on these files before testing it on your own.
 In order to work you also need to download @gramm and have the @gramm folder either in the same folder as these 3 scripts or have it in your path
