@@ -10,22 +10,22 @@ function [EEGPh] = Pre_Processing
 
 %% These steps import your 3 data types, data, time, and EEG_Data & create our output filename from the existing filenames
 % data
-[file] = uigetfile({'*DATA.mat'},...
+[file] = uigetfile({'*DATA.mat'},...                                % This command lets the user select any file ending in 'DATA.mat'
                           'Select Photometry DATA output file');
 datastruct = open(file) ;
-data = datastruct.data ;
+data = datastruct.data ;                                           
 
-filename = strrep(file, 'DATA', 'EEGPh') ;  % This command uses the matlab data file's name to create out EEGPh filename by simply replacing DATA with EEGPh
+filename = strrep(file, 'DATA', 'EEGPh') ;  % This command uses the matlab data file's name to create our EEGPh filename by simply replacing DATA with EEGPh
                      
-[file] = uigetfile({'*TIME.mat'},...
+[file] = uigetfile({'*TIME.mat'},...                                % This command lets the user select any file ending in 'TIME.mat'
                           'Select Photometry TIME output file');
 timestruct = open(file) ;
 time = timestruct.time ;
                       
-[file] = uigetfile({'*TEXT.txt'},...
+[file] = uigetfile({'*TEXT.txt'},...                                % This command lets the user select any file ending in 'TEXT.txt'
                           'Select EEG TEXT output file');
 EEG_File = readtable(file) ;
-EEG_data = [EEG_File.V, EEG_File.V_1] ; % 
+EEG_data = [EEG_File.V, EEG_File.V_1] ;                             % Here we select only the relevant columns for our EEG_data variable
 
 % Ask the user for the sampling rate of the Fiber-photometry and the EEG -
 % default both to 256 and save as the variables r1 and r2
@@ -64,6 +64,9 @@ F_res = resample(data, r2, r1);
 F_res = F_res(e+1:n-e , :); % correct error created by resamping by cutting off data points at both ends
 time2 = time1(e+1:n-e);
 
+
+% Now we plot the raw data and the data after resampling has occurred for
+% visual confirmation that we didn't dramatically change the data's shape
 figure; 
 subplot(2,1,1) ;
 plot(time,data(:,1),'g') ;
@@ -72,6 +75,8 @@ subplot(2,1,2) ;
 plot(time2,F_res(:,1),'r') ;
 title({'Raw Data after resampling to make the EEG data' ; 'and the Fiber-photometry data the same length'})
 
+% Calculate dF/F using the median of the entire data sample (not a
+% baseline - if you want to use a baseline you should change this calculation)
 dFF = (F_res(:,1) - median(F_res(:,1)))/median(F_res(:,1)) ;
 
 % Perform the calculations for the type of detrending requested above
@@ -103,3 +108,4 @@ EEGPh(:,3) = dFF_detrend(:,1) ;
 % Save the variable in the current folder
 save(filename, 'EEGPh') ;
 end
+
