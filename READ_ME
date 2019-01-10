@@ -4,7 +4,7 @@ To see the output from that step look at the EEG_SCORED.txt file in the example 
 
 This zip file contains 3 2017a MATLAB scripts that I used to create the scripts, test it on these files before testing it on your own.
 In order to work you also need to download @gramm and have the @gramm folder either in the same folder as these 3 scripts or have it in your path
-Find @gramm here:
+Find @gramm here: https://www.mathworks.com/matlabcentral/fileexchange/54465-gramm-complete-data-visualization-toolbox-ggplot2-r-like
 Download example data here to test: https://drive.google.com/open?id=1g8UHtuqwai1jqqOwhzQeSchtxiMXcErM 
 
 Files needed:
