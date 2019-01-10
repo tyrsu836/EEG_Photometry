@@ -1,0 +1,31 @@
+This zip file contains 3 scripts and some example data that I used to create the scripts, test it on these files before testing it on your own.
+It also contains a folder of scripts from @gramm that I used for the plotting
+
+Files needed:
+	For Pre_Processing:
+	'...EEG TEXT.txt' - Data output from the EEG rig
+	'...DATA.mat' - Signal data output from the Fiber-Photometry rig
+	'...TIME.mat' - Time data output from the Fiber-Photometry rig
+	'plot_heatmap.m' - personalized heatmap plotting script
+	'@gramm' - folder containing gramm figure plotting scripts
+	
+	For Post_Processing:
+	'...EEG SCORED.txt' - Scored EEG output from the EEG_Processing program
+	'...EEGPh.mat' - Our MATLAB output from the 'Pre_Processing' script
+
+Steps involved:
+
+1. Move your '...EEG TEXT.txt' data file and your Fiber photometry files ('...DATA.mat' and '...TIME.mat') into the 'EEG and FPh Processing' Folder.
+2. Run Pre_Processing
+	Now You will have your '...EEGPh.mat' located in the 'EEG and FPh Processing' Folder.
+
+3. Use the EEGProcessing script to score sleep-wake states (not included in this file - ask Shibin/Jeremy for it)
+	This should give you a .txt output that you should call '...EEG SCORED.txt'
+
+4. Make sure your '...EEG SCORED.txt' and '...EEGPh.mat' are in the 'EEG and FPh Processing' Folder.
+5. Run Post_Processing
+	Now you will have a new .csv file called '...EEG SCORED.csv' which has all of your transition times in it in the 'EEG and FPh Processing' Folder.
+	You will also have a new folder with .csv files in it for each transition type which hold Fiber Photometry data for 10 seconds before and after each transition.
+	This script also plots several figures for you.
+
+
